@@ -1,0 +1,10 @@
+# Railway builds the Dockerfile and checks the Express health endpoint.
+# Add a persistent volume at /data and set DB_PATH=/data/cabshare.sqlite.
+[build]
+builder = "DOCKERFILE"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 60
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3

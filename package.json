@@ -1,0 +1,16 @@
+{
+  "name": "cabshare-vjti",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "CabShare — student taxi matching and algorithm analysis project",
+  "scripts": {
+    "start": "node server/app.js",
+    "dev": "node --watch server/app.js",
+    "test": "node --test tests/*.test.js",
+    "benchmark": "node scripts/benchmark.js",
+    "seed": "node scripts/seed-demo.js"
+  },
+  "engines": {"node": ">=22.13.0"},
+  "dependencies": {"express": "^5.1.0", "nodemailer": "^7.0.0", "dotenv": "^17.2.0"}
+}

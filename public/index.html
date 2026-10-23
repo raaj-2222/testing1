@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0c2531">
+  <meta name="description" content="CabShare — split a ₹50 taxi between Dadar and VJTI with other students.">
+  <title>CabShare · A better ride to VJTI</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <header class="site-header">
+    <div class="shell topbar">
+      <a href="/" class="brand" aria-label="CabShare home"><span class="brand-mark">↗</span><span>cab<span class="brand-accent">share</span><small>VJTI STUDENT RIDES</small></span></a>
+      <div class="head-right"><span class="campus-indicator"><span class="dot"></span> Built for VJTI, Mumbai</span><button id="aboutButton" class="nav-link">How it works</button><div id="loggedInHeader" class="hidden header-profile"><span id="profileAvatar" class="profile-avatar">S</span><span id="profileName">Student</span><button id="logoutButton" class="logout-btn">Log out</button></div></div>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="shell hero-layout">
+        <div class="hero-copy"><span class="eyebrow"><span class="spark">✦</span> SMARTER CAMPUS COMMUTES</span>
+          <h1>Same route.<br><em>Smaller fare.</em></h1>
+          <p>Going from Dadar to VJTI? Find students heading your way, share a kaali-peeli, and turn a ₹50 ride into just ₹12.50.</p>
+          <div class="hero-points"><span><b>✓</b> Verified college email</span><span><b>✓</b> Max 4 per cab</span><span><b>✓</b> Automatic matching</span></div>
+        </div>
+        <div class="hero-art" aria-label="Fare split illustration">
+          <div class="route-line"><div class="station"><span class="station-emoji">🚉</span><b>Dadar</b><small>Station</small></div><div class="route-dashes"><span class="cab-symbol">🚕</span></div><div class="station"><span class="station-emoji">🎓</span><b>VJTI</b><small>Campus</small></div></div>
+          <div class="fare-preview"><div class="fare-preview-heading"><span>THE MATH IS SIMPLE</span><span class="live-pill">● SAVE MORE</span></div><div class="fare-compare"><div><small>Solo cab</small><del>₹50.00</del></div><span class="arrow">→</span><div><small>With 4 students</small><strong>₹12.50</strong></div></div><div class="saving-label">You save <b>75%</b> on every full cab.</div></div>
+          <div class="decor-ring ring-one"></div><div class="decor-ring ring-two"></div>
+        </div>
+      </div>
+    </section>
+    <section class="shell dashboard-shell">
+      <div id="authView" class="auth-grid">
+        <div class="auth-intro"><span class="section-kicker">GET STARTED</span><h2>Your ride starts here.</h2><p>Only students with an approved VJTI college email can access student travel details and cab groups.</p>
+          <div class="auth-perks"><div><span class="perk-icon">🔒</span><span><strong>Members-only network</strong><small>Email verification before you can log in</small></span></div><div><span class="perk-icon">⏱</span><span><strong>20-minute matching window</strong><small>Travel with students leaving around your time</small></span></div><div><span class="perk-icon">💸</span><span><strong>Fair split, no platform fee</strong><small>₹50 total, split among 1 to 4 riders</small></span></div></div>
+        </div>
+        <div class="panel auth-panel"><div class="auth-tabs"><button id="loginTab" class="auth-tab selected" type="button">Log in</button><button id="signupTab" class="auth-tab" type="button">Create account</button></div>
+          <h3 id="authHeading">Welcome back <span>👋</span></h3><p id="authSubtitle" class="muted">Log in to find your next shared ride.</p>
+          <form id="authForm"><div id="nameField" class="field hidden"><label for="authName">Full name</label><input id="authName" autocomplete="name" placeholder="e.g. Aarav Patil" maxlength="60"></div>
+            <div class="field"><label for="authEmail">College email</label><input id="authEmail" type="email" autocomplete="email" required placeholder="you@vjti.ac.in"></div>
+            <div class="field"><label for="authPassword">Password</label><input id="authPassword" type="password" autocomplete="current-password" required minlength="10" placeholder="At least 10 characters"></div>
+            <button id="authSubmit" type="submit" class="btn btn-primary btn-wide">Log in <span>→</span></button>
+          </form><button id="resendButton" type="button" class="text-action">Need a new verification link?</button><div class="auth-note"><span>ⓘ</span> Verification links are printed in your terminal in local development. For live use, configure SMTP.</div>
+        </div>
+      </div>
+      <div id="appView" class="hidden">
+        <div class="page-head"><div><span class="section-kicker">YOUR COMMUTE, SORTED</span><h2>Find your ride <span class="wave">✳</span></h2><p>Post when you're leaving. We'll find your people.</p></div><button id="newTripButton" class="btn btn-primary"><span class="plus">+</span> Post a trip</button></div>
+        <div class="stats"><div class="stat panel"><span class="stat-icon student-icon">👥</span><div><small>Students travelling</small><strong id="statStudents">0</strong></div></div><div class="stat panel"><span class="stat-icon cars-icon">🚕</span><div><small>Open cab groups</small><strong id="statGroups">0</strong></div></div><div class="stat panel"><span class="stat-icon savings-icon">₹</span><div><small>Fare with 4 riders</small><strong>₹12.50</strong></div></div></div>
+        <div class="content-layout">
+          <div class="left-col"><div class="panel rides-panel"><div class="panel-heading"><div><span class="section-kicker">MATCHED RIDES</span><h3>Available cab groups</h3></div><span class="refresh-tag"><span class="dot"></span> Refreshes every 10s</span></div>
+            <div class="route-tabs"><button class="route-tab active" data-direction="to_vjti">🚉 Dadar <span>→</span> 🎓 VJTI</button><button class="route-tab" data-direction="to_dadar">🎓 VJTI <span>→</span> 🚉 Dadar</button></div>
+            <div class="filter-bar"><div class="filter-input"><label for="filterDate">Travel date</label><input type="date" id="filterDate"></div><div class="filter-input"><label for="filterTime">Around this time</label><input type="time" id="filterTime" title="Filter within 20 minutes; leave blank for all times"></div><button id="clearTimeButton" class="clear-button">All times</button></div>
+            <div id="groupsList" class="group-list"></div>
+          </div>
+          <div class="panel solo-panel"><div class="panel-heading"><div><span class="section-kicker">ALSO TRAVELLING</span><h3>Looking for a cab</h3></div></div><p class="microcopy">These students have posted a trip but aren't in a group yet.</p><div id="soloList"></div></div>
+          </div>
+          <div class="right-col"><div class="panel my-trips-panel"><div class="panel-heading"><div><span class="section-kicker">YOUR SCHEDULE</span><h3>My trips</h3></div></div><div id="myTripsList"></div><button id="sidePostButton" class="btn btn-outline btn-wide">+ Add another trip</button></div>
+            <div class="tips-card"><div class="tips-symbol">✦</div><span class="section-kicker">THE CABSHARE WAY</span><h3>Better together.</h3><p>We group students travelling the same direction within a 20-minute window. Once 4 seats fill up, a fresh cab group starts automatically.</p><div class="tip-divider"></div><div class="fare-list"><div><span>2 riders</span><b>₹25.00 each</b></div><div><span>3 riders</span><b>~₹16.67 each</b></div><div><span>4 riders</span><b>₹12.50 each</b></div></div><small>Estimated ₹50 total cab fare. Actual taxi fare may vary.</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="shell footer-content"><span class="footer-brand">cab<span>share</span> <small>· VJTI STUDENT PROJECT</small></span><span>Made for better commutes in Matunga, Mumbai. Not affiliated with VJTI or a taxi operator.</span></div></footer>
+
+  <div id="tripModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="tripModalTitle"><div class="modal"><div class="modal-head"><div><span class="section-kicker">PLAN YOUR RIDE</span><h2 id="tripModalTitle">Post a trip</h2></div><button class="modal-x" id="closeTripButton" aria-label="Close dialog">×</button></div><p class="muted">We'll match you with students leaving within 20 minutes.</p>
+    <form id="tripForm"><div class="field"><label for="tripDirection">Direction</label><select id="tripDirection"><option value="to_vjti">Dadar Station → VJTI</option><option value="to_dadar">VJTI → Dadar Station</option></select></div><div class="form-split"><div class="field"><label for="tripDate">Travel date</label><input id="tripDate" type="date" required></div><div class="field"><label for="tripTime">Departure time</label><input id="tripTime" type="time" required></div></div><div class="modal-note">✨ You'll be placed in an open group automatically, or a new cab group will be started.</div><button type="submit" class="btn btn-primary btn-wide">Find my cab <span>→</span></button></form></div></div>
+
+  <div id="aboutModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="aboutTitle"><div class="modal"><div class="modal-head"><div><span class="section-kicker">HOW IT WORKS</span><h2 id="aboutTitle">Share the route, not the cost.</h2></div><button class="modal-x" id="closeAboutButton" aria-label="Close dialog">×</button></div><div class="how-step"><b>01</b><div><strong>Verify your VJTI email</strong><p>Sign up, verify the emailed link, and log in.</p></div></div><div class="how-step"><b>02</b><div><strong>Choose a time and direction</strong><p>Post Dadar → VJTI or the return trip. We look for departures within 20 minutes.</p></div></div><div class="how-step"><b>03</b><div><strong>Split the taxi fare</strong><p>Groups of up to four form automatically. You can leave a group or join another compatible one.</p></div></div><p class="modal-note">This is a student coordination project, not a cab-booking service. Meet safely in public and agree on the actual meter fare.</p></div></div>
+</body>
+</html>
