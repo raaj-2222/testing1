@@ -151,6 +151,12 @@ Read **[docs/AUTHENTICATION.md](docs/AUTHENTICATION.md)** for components, the si
 
 Read **[docs/ALGORITHMS.md](docs/ALGORITHMS.md)** and **[docs/BENCHMARK_RESULTS.md](docs/BENCHMARK_RESULTS.md)** for time/space complexities, pseudocode, measured performance and limitations.
 
+## Vercel verification-email errors
+
+The frontend can load on Vercel while signup cannot send email. CabShare now supports **Resend HTTPS email sending** with `RESEND_API_KEY` + `MAIL_FROM` (verified sender), or SMTP on a traditional Node server. Missing email configuration stops signup before creating an account; delivery errors show a clear 503 instead of an unexplained 500. See **[docs/VERCEL_SETUP.md](docs/VERCEL_SETUP.md)** for steps and troubleshooting.
+
+**Caution:** Vercel Functions cannot store SQLite reliably across requests. Production Vercel deployment also requires migrating the backend to hosted PostgreSQL or moving the full Node server onto hosting with a persistent filesystem volume. Email setup alone does not make the database persistent.
+
 ## Hosting it online
 
 **The deployment-ready files are included:** `Dockerfile`, `railway.toml`, and a configurable database path `DB_PATH` for persistent SQLite storage. Follow **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** for a step-by-step Railway deployment. Actual hosting requires a linked hosting account, the real student email domain, and SMTP credentials; generating the code does not itself publish a website.
