@@ -2,18 +2,12 @@ import crypto from 'node:crypto';
 import { promisify } from 'node:util';
 import nodemailer from 'nodemailer';
 import { db } from './db.js';
+export { allowedEmail } from './email-domains.js';
 
 const scrypt = promisify(crypto.scrypt);
 const SESSION_MS = 7 * 24 * 60 * 60 * 1000;
 export const digest = value => crypto.createHash('sha256').update(value).digest('hex');
 const token = () => crypto.randomBytes(32).toString('hex');
-
-export function allowedEmail(email) {
-  const domains = (process.env.ALLOWED_EMAIL_DOMAINS || 'vjti.ac.in')
-    .split(',').map(v => v.trim().toLowerCase()).filter(Boolean);
-  const m = /^[^\s@]+@([^\s@]+)$/.exec(email);
-  return Boolean(m && domains.includes(m[1].toLowerCase()));
-}
 
 export async function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString('hex');

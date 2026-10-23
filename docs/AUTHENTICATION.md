@@ -37,7 +37,7 @@ Browser Signup Form          Express             SQLite             Email / loca
 
 Code landmarks:
 
-- `server/auth.js` — `allowedEmail(email)` checks the exact domain against `ALLOWED_EMAIL_DOMAINS`.
+- `server/auth.js` — `allowedEmail(email)` re-exports the exact-domain check in `server/email-domains.js`; defaults include `vjti.ac.in` and `it.vjti.ac.in` and can be replaced by `ALLOWED_EMAIL_DOMAINS`.
 - `server/auth.js` — `hashPassword(password)` produces a **random 16-byte salt** and a **64-byte scrypt hash**. Neither plaintext password nor password-equivalent data is returned to the browser.
 - `server/auth.js` — `issueVerification(userId,email)` creates a random 32-byte (64-hex-character) token. Only its **SHA-256 hash** is stored in SQLite. Token expires after **30 minutes**, and requesting a fresh link revokes previous links for that user.
 - `server/auth.js` — `verifyEmail(raw)` hashes the supplied token, requires that it hasn't expired, marks the account verified, and deletes the verification record in one transaction.
@@ -82,7 +82,7 @@ Details:
 - Every mutation validates `Origin` when present and rejects `Sec-Fetch-Site: cross-site`. Together with `SameSite=Lax`, this protects against common cross-site request forgery in modern browsers. Public HTTPS and comprehensive CSRF testing are still necessary before a campus launch.
 - A basic 25-requests-per-IP-per-endpoint/15-minute rate limiter covers authentication. It is **in-memory** and resets on server restart; production needs a persistent, shared limiter and more targeted abuse controls.
 - Other students can see **names and times**, not private college email addresses. Only the trip owner may cancel or leave their own trip, and only group members may complete their ride.
-- Correct `@vjti.ac.in` suffix **is not verification**; a user must prove inbox access with a 30-minute link. VJTI's real student-issued domain should be validated before campus deployment.
+- An allowed VJTI email suffix **is not verification**; a user must prove inbox access with a 30-minute link. VJTI's real student-issued domain should be validated before campus deployment.
 - `NODE_ENV=production` without SMTP makes verification email dispatch fail; do not deploy until SMTP and HTTPS are set up.
 - There is no password-reset, two-factor authentication, college SSO, account suspension, or full production audit log in this classroom MVP.
 

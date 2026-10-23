@@ -40,7 +40,7 @@ Add these variables under the web service **Variables** tab (do not put credenti
 | `NODE_ENV` | `production` |
 | `DB_PATH` | `/data/cabshare.sqlite` |
 | `TRUST_PROXY` | `1` |
-| `ALLOWED_EMAIL_DOMAINS` | Actual verified VJTI student-email domain(s), comma-separated |
+| `ALLOWED_EMAIL_DOMAINS` | `vjti.ac.in,it.vjti.ac.in` (or approved domains), comma-separated |
 | `BASE_URL` | `https://YOUR-SERVICE.up.railway.app` (replace with the generated domain) |
 | `SMTP_HOST` | Your email provider's SMTP host |
 | `SMTP_PORT` | Usually `587`, depending on provider |
@@ -51,7 +51,7 @@ Add these variables under the web service **Variables** tab (do not put credenti
 
 **Email is required for production signup.** The app intentionally never exposes verification links on public pages and cannot complete signups without a working email provider. Test domain and SMTP sending using real, permitted addresses before inviting classmates.
 
-**Important:** `vjti.ac.in` is a sample allowlist entry, not proof that this is the domain issued for student accounts. Confirm your student email domain with the college first.
+**Important:** The default allowlist includes `vjti.ac.in` and `it.vjti.ac.in`; this does not establish every department’s approved student domain. Confirm your student email domain with the college first.
 
 ## 4. Publish and test
 

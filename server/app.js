@@ -6,6 +6,7 @@ import { db, transaction, refreshGroup } from './db.js';
 import { allowedEmail, hashPassword, checkPassword, makeSession, clearSession,
   optionalAuth, requireAuth, issueVerification, verifyEmail } from './auth.js';
 import { WINDOW_MINUTES, MAX_PASSENGERS, FARE_PAISE, findOpenGroup, splitFare } from './matching.js';
+import { allowedDomains } from './email-domains.js';
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -80,7 +81,7 @@ function positiveId(value) { const n = Number(value); return Number.isSafeIntege
 
 app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'CabShare' }));
 app.get('/api/config', (_req, res) => res.json({ windowMinutes: WINDOW_MINUTES, fare: FARE_PAISE / 100, maxPassengers: MAX_PASSENGERS,
-  serverTimeMumbai: nowInMumbai(), allowedDomains: (process.env.ALLOWED_EMAIL_DOMAINS || 'vjti.ac.in').split(',').map(x => x.trim()) }));
+  serverTimeMumbai: nowInMumbai(), allowedDomains: allowedDomains() }));
 
 app.post('/api/auth/signup', rateLimit, async (req, res) => {
   const name = String(req.body?.name || '').trim().replace(/\s+/g, ' ');
