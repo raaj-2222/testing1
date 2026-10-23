@@ -11,7 +11,10 @@ const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const DIRS = new Set(['to_vjti', 'to_dadar']);
 const publicDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../public');
-if (process.env.TRUST_PROXY === '1') app.set('trust proxy', 1);
+// Vercel (and optionally other configured hosts) terminates HTTPS at a proxy.
+// Trust one proxy hop so req.protocol reads X-Forwarded-Proto ('https')
+// rather than the internal HTTP connection. This keeps Origin checks enabled.
+if (process.env.TRUST_PROXY === '1' || process.env.VERCEL === '1') app.set('trust proxy', 1);
 app.disable('x-powered-by');
 
 app.use((req, res, next) => {
