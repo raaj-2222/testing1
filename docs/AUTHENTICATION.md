@@ -37,7 +37,7 @@ Browser Signup Form          Express             SQLite             Email / loca
 
 Code landmarks:
 
-- `server/auth.js` — `allowedEmail(email)` re-exports the exact-domain check in `server/email-domains.js`; defaults include `vjti.ac.in` and `it.vjti.ac.in` and can be replaced by `ALLOWED_EMAIL_DOMAINS`.
+- `server/auth.js` — `allowedEmail(email)` re-exports the suffix-safe check in `server/email-domains.js`; the app accepts the root `vjti.ac.in` and any of its subdomains for students across departments and faculty. `ALLOWED_EMAIL_DOMAINS` can add explicitly approved additional roots; it does not remove VJTI. Lookalikes and malformed domains are rejected.
 - `server/auth.js` — `hashPassword(password)` produces a **random 16-byte salt** and a **64-byte scrypt hash**. Neither plaintext password nor password-equivalent data is returned to the browser.
 - `server/auth.js` — `issueVerification(userId,email)` creates a random 32-byte (64-hex-character) token. Only its **SHA-256 hash** is stored in SQLite. Token expires after **30 minutes**, and requesting a fresh link revokes previous links for that user.
 - `server/auth.js` — `verifyEmail(raw)` hashes the supplied token, requires that it hasn't expired, marks the account verified, and deletes the verification record in one transaction.
