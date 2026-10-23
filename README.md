@@ -45,13 +45,13 @@ npm start
 ### Sign in for the first time
 
 1. Open `http://localhost:3000` and click **Create account**.
-2. Enter your name, a VJTI email ending in `@vjti.ac.in` or `@it.vjti.ac.in` (or another configured allowed domain), and a password of at least 10 characters.
+2. Enter your name, a VJTI email at `@vjti.ac.in` or **any** `*.vjti.ac.in` subdomain (student, any branch, or faculty), and a password of at least 10 characters.
 3. With the default **development** configuration, the server prints an email verification URL to the **terminal running `npm start`**. Open the link in the browser. SMTP is optional locally.
 4. Log in using the same email and password.
 5. Click **Post a trip**. Choose a future Mumbai date/time and direction. The app automatically finds a matching group or creates one.
 6. To simulate several riders, repeat with different email addresses or seed fictional riders as described below.
 
-**Important:** The default allowlist includes `vjti.ac.in` and `it.vjti.ac.in` to support IT student emails; this does not confirm every student/department's issued domain. Check actual issued student addresses and update `ALLOWED_EMAIL_DOMAINS` before a real campus launch. Domain matching is exact (not every subdomain is allowed). A correct email suffix by itself is **not** proof of student identity: verification is required.
+**Important:** The default allowlist includes `vjti.ac.in` and **all its subdomains**, so any VJTI branch and faculty email can sign up. Lookalike domains are rejected. `ALLOWED_EMAIL_DOMAINS` can add other explicitly approved domains; it cannot remove VJTI. Possessing an address is not proof of affiliation: **inbox verification is required**. Confirm that the addresses actually belong to VJTI before public launch.
 
 ### Optional sample data for a presentation
 
