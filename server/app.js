@@ -88,7 +88,7 @@ app.post('/api/auth/signup', rateLimit, async (req, res) => {
   const email = String(req.body?.email || '').trim().toLowerCase();
   const password = req.body?.password;
   if (name.length < 2 || name.length > 60) return fail(res, 400, 'Name must be 2–60 characters.');
-  if (!allowedEmail(email)) return fail(res, 400, 'Please use an allowed VJTI email domain.');
+  if (!allowedEmail(email)) return fail(res, 400, 'Please use an official VJTI email address.');
   if (typeof password !== 'string' || password.length < 10 || password.length > 128)
     return fail(res, 400, 'Password must contain 10–128 characters.');
   if (db.prepare('SELECT id FROM users WHERE email=?').get(email))
