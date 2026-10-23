@@ -7,6 +7,7 @@ import { allowedEmail, hashPassword, checkPassword, makeSession, clearSession,
   optionalAuth, requireAuth, issueVerification, verifyEmail } from './auth.js';
 import { WINDOW_MINUTES, MAX_PASSENGERS, FARE_PAISE, findOpenGroup, splitFare } from './matching.js';
 import { allowedDomains } from './email-domains.js';
+import { canDeliverVerificationEmail } from './email-delivery.js';
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -91,6 +92,9 @@ app.post('/api/auth/signup', rateLimit, async (req, res) => {
   if (!allowedEmail(email)) return fail(res, 400, 'Please use an official VJTI email address.');
   if (typeof password !== 'string' || password.length < 10 || password.length > 128)
     return fail(res, 400, 'Password must contain 10–128 characters.');
+  // Fail before creating an account when public email verification is not configured.
+  if (!canDeliverVerificationEmail()) return fail(res, 503,
+    'Registration is temporarily unavailable: the site administrator must configure verification email delivery.');
   if (db.prepare('SELECT id FROM users WHERE email=?').get(email))
     return fail(res, 409, 'Email is already registered. Log in or request verification again.');
   const { salt, hash } = await hashPassword(password);
@@ -100,7 +104,7 @@ app.post('/api/auth/signup', rateLimit, async (req, res) => {
     await issueVerification(Number(inserted.lastInsertRowid), email);
   } catch (error) {
     console.error('Verification mail error:', error.message);
-    return fail(res, 503, 'Account created, but verification email could not be sent. Use Resend verification.');
+    return fail(res, 503, 'Account saved, but the verification email could not be delivered. Ask the site administrator to check email settings, then use Resend verification.');
   }
   return res.status(201).json({ message: 'Account created. Check your college email for a verification link. In local mode, check the server terminal.' });
 });
@@ -112,8 +116,15 @@ app.post('/api/auth/resend', rateLimit, async (req, res) => {
   if (!user || typeof password !== 'string' || !(await checkPassword(password, user)))
     return fail(res, 401, 'Invalid email or password.');
   if (user.verified) return res.json({ message: 'Email is already verified. You can log in.' });
-  await issueVerification(user.id, user.email);
-  res.json({ message: 'New verification link sent (or printed in the local server terminal).' });
+  if (!canDeliverVerificationEmail()) return fail(res, 503,
+    'Verification emails are not configured yet. Please contact the site administrator.');
+  try {
+    await issueVerification(user.id, user.email);
+    res.json({ message: 'New verification link sent. Check your email inbox and spam folder.' });
+  } catch (error) {
+    console.error('Resend verification mail error:', error.message);
+    return fail(res, 503, 'Unable to send verification email right now. Please contact the site administrator.');
+  }
 });
 
 app.post('/api/auth/verify', rateLimit, (req, res) => {
@@ -303,8 +314,8 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Unexpected server error. See the server terminal.' });
 });
 
-if (process.env.NODE_ENV === 'production' && !process.env.SMTP_HOST)
-  console.warn('WARNING: configure SMTP_HOST before accepting signups in production.');
+if ((process.env.NODE_ENV === 'production' || process.env.VERCEL === '1') && !canDeliverVerificationEmail())
+  console.warn('WARNING: CabShare verification email delivery is not configured. Set RESEND_API_KEY and MAIL_FROM, or SMTP credentials.');
 
 if (process.env.NODE_ENV !== 'test') app.listen(PORT, () => {
   console.log(`\n🚕 CabShare is running: http://localhost:${PORT}`);
