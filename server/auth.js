@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import { promisify } from 'node:util';
-import nodemailer from 'nodemailer';
+import { deliverVerificationEmail } from './email-delivery.js';
 import { db } from './db.js';
 export { allowedEmail } from './email-domains.js';
 
@@ -58,18 +58,8 @@ export async function issueVerification(userId, email) {
     .run(digest(raw), userId, Date.now() + 30 * 60_000);
   const base = (process.env.BASE_URL || 'http://localhost:3000').replace(/\/$/, '');
   const url = `${base}/?verify=${encodeURIComponent(raw)}`;
-  if (process.env.SMTP_HOST) {
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST, port: Number(process.env.SMTP_PORT || 587),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-    });
-    await transporter.sendMail({ from: process.env.MAIL_FROM || process.env.SMTP_USER,
-      to: email, subject: 'Verify your CabShare email',
-      text: `Open this link within 30 minutes to verify your student email:\n${url}` });
-  } else if (process.env.NODE_ENV !== 'production') {
-    console.log(`\n[LOCAL DEVELOPMENT] Email verification link for ${email}:\n${url}\n`);
-  } else throw new Error('SMTP must be configured for production verification');
+  // The raw link is delivered only by mail (or locally in the terminal).
+  await deliverVerificationEmail(email, url);
   // Never send the raw verification token in an API response.
 }
 
